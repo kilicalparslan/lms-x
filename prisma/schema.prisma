@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  password    String
+  role        Role         @default(STUDENT)
+  enrollments Enrollment[]
+  courses     Course[]     @relation("TeacherCourses")
+  Submission  Submission[]
+}
+
+model Course {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String?
+  isPublished Boolean      @default(false)
+  teacher     User         @relation("TeacherCourses", fields: [teacherId], references: [id])
+  teacherId   Int
+  lessons     Lesson[]
+  enrollments Enrollment[]
+}
+
+model Lesson {
+  id         Int          @id @default(autoincrement())
+  title      String
+  content    String
+  videoUrl   String?
+  order      Int
+  course     Course       @relation(fields: [courseId], references: [id])
+  courseId   Int
+  Assignment Assignment[]
+}
+
+model Enrollment {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  course     Course   @relation(fields: [courseId], references: [id])
+  courseId   Int
+  enrolledAt DateTime @default(now())
+  progress   Float    @default(0)
+}
+
+model Assignment {
+  id           Int          @id @default(autoincrement())
+  lesson       Lesson       @relation(fields: [lessonId], references: [id])
+  lessonId     Int
+  title        String
+  instructions String
+  dueDate      DateTime
+  maxScore     Int
+  Submission   Submission[]
+}
+
+model Submission {
+  id           Int        @id @default(autoincrement())
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  assignmentId Int
+  student      User       @relation(fields: [studentId], references: [id])
+  studentId    Int
+  content      String
+  score        Int?
+  submittedAt  DateTime   @default(now())
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
