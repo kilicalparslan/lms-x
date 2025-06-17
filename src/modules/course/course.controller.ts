@@ -3,7 +3,7 @@ import { CourseService } from './course.service';
 import { Course } from '@prisma/client';
 import { CreateCourseDto } from './dto/create-course.dto';
 
-@Controller('courses')
+@Controller('course')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
