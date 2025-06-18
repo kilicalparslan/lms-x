@@ -3,7 +3,7 @@ import { CourseService } from './course.service';
 import { Course } from '@prisma/client';
 import { CreateCourseDto } from './dto/create-course.dto';
 
-@Controller('course')
+@Controller('courses')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
@@ -12,7 +12,7 @@ export class CourseController {
     return this.courseService.findAllCourses();
   }
 
-  @Get('/:id')
+  @Get(':id')
   findACourse(@Param('id') id: string): Promise<Course | null> {
     return this.courseService.findCourse(+id);
   }
@@ -22,7 +22,7 @@ export class CourseController {
     return this.courseService.createCourse(body);
   }
 
-  @Delete('/:id')
+  @Delete(':id')
   deleteCourse(@Param('id') id: string): Promise<Course> {
     return this.courseService.deleteCourse(+id);
   }
