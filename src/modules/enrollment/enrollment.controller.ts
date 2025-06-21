@@ -3,7 +3,7 @@ import { EnrollmentService } from './enrollment.service';
 import { Enrollment } from '@prisma/client';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 
-@Controller('enrollment')
+@Controller('enrollments')
 export class EnrollmentController {
   constructor(private readonly enrollmentService: EnrollmentService) {}
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Enrollment } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 
 @Injectable()
 export class EnrollmentService {
@@ -16,10 +17,7 @@ export class EnrollmentService {
     });
   }
 
-  async createEnrollment(data: {
-    userId: number;
-    courseId: number;
-  }): Promise<Enrollment> {
+  async createEnrollment(data: CreateEnrollmentDto): Promise<Enrollment> {
     return this.prisma.enrollment.create({
       data,
     });

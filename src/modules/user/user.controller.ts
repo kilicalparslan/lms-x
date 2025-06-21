@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 
@@ -7,22 +15,26 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAllUsers() {
-    return this.userService.findAllUsers();
+  async findAllUsers() {
+    return await this.userService.findAllUsers();
   }
 
   @Get(':id')
-  findUser(@Param('id') id: string) {
-    return this.userService.findUser({ id: +id });
+  async findUser(@Param('id') id: string) {
+    const result = await this.userService.findUser({ id: +id });
+    if (!result) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+    return result;
   }
 
   @Post()
-  createUser(@Body() body: CreateUserDto) {
-    return this.userService.createUser(body);
+  async createUser(@Body() body: CreateUserDto) {
+    return await this.userService.createUser(body);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return this.userService.deleteUser({ id: +id });
+  async deleteUser(@Param('id') id: string) {
+    return await this.userService.deleteUser({ id: +id });
   }
 }
