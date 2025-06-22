@@ -1,28 +1,34 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { AssignmentService } from './assignment.service';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
+import { Assignment } from '@prisma/client';
+import { DeleteResponse } from 'src/types';
+import { ResponseUtil } from 'src/utils/response-util';
 
 @Controller('assignments')
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
 
   @Get()
-  findAll() {
-    return this.assignmentService.findAll();
+  async findAllAssignments(): Promise<Assignment[]> {
+    return await this.assignmentService.findAllAssignments();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.assignmentService.findOne(+id);
+  async findAssignment(@Param('id') id: string): Promise<Assignment> {
+    return this.assignmentService.findAssignmentOrFail(+id);
   }
 
   @Post()
-  create(@Body() body: CreateAssignmentDto) {
-    return this.assignmentService.create(body);
+  async createAssignment(
+    @Body() body: CreateAssignmentDto,
+  ): Promise<Assignment> {
+    return await this.assignmentService.createAssignment(body);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.assignmentService.delete(+id);
+  async deleteAssignment(@Param('id') id: string): Promise<DeleteResponse> {
+    await this.assignmentService.deleteAssignment(+id);
+    return ResponseUtil.successDelete(id, 'Assignment');
   }
 }

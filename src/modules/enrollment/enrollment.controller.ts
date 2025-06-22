@@ -8,22 +8,24 @@ export class EnrollmentController {
   constructor(private readonly enrollmentService: EnrollmentService) {}
 
   @Get()
-  findAllEnrollments(): Promise<Enrollment[]> {
+  async findAllEnrollments(): Promise<Enrollment[]> {
     return this.enrollmentService.findAllEnrollments();
   }
 
   @Get(':id')
-  findEnrollment(@Param('id') id: string): Promise<Enrollment | null> {
-    return this.enrollmentService.findEnrollment(+id);
+  async findEnrollment(@Param('id') id: string): Promise<Enrollment> {
+    return this.enrollmentService.findEnrollmentOrFail(+id);
   }
 
   @Post()
-  createEnrollment(@Body() body: CreateEnrollmentDto): Promise<Enrollment> {
-    return this.enrollmentService.createEnrollment(body);
+  async createEnrollment(
+    @Body() body: CreateEnrollmentDto,
+  ): Promise<Enrollment> {
+    return await this.enrollmentService.createEnrollment(body);
   }
 
   @Delete(':id')
-  deleteEnrollment(@Param('id') id: string): Promise<Enrollment> {
+  async deleteEnrollment(@Param('id') id: string): Promise<Enrollment> {
     return this.enrollmentService.deleteEnrollment(+id);
   }
 }

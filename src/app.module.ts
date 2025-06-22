@@ -7,9 +7,10 @@ import { CourseModule } from './modules/course/course.module';
 import { LessonModule } from './modules/lesson/lesson.module';
 import { AssignmentModule } from './modules/assignment/assignment.module';
 import { EnrollmentModule } from './modules/enrollment/enrollment.module';
+import { SubmissionModule } from './modules/submission/submission.module';
 
 @Module({
-  imports: [PrismaModule, UserModule, CourseModule, LessonModule, AssignmentModule, EnrollmentModule],
+  imports: [PrismaModule, UserModule, CourseModule, LessonModule, AssignmentModule, EnrollmentModule, SubmissionModule],
   controllers: [AppController],
   providers: [AppService],
 })
