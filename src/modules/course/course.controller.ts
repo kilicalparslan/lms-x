@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { CourseService } from './course.service';
 import { Course } from '@prisma/client';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -15,8 +23,8 @@ export class CourseController {
   }
 
   @Get(':id')
-  async findACourse(@Param('id') id: string): Promise<Course> {
-    return this.courseService.findCourseOrFail(+id);
+  async findACourse(@Param('id', ParseIntPipe) id: number): Promise<Course> {
+    return this.courseService.findCourseOrFail(id);
   }
 
   @Post()
@@ -25,8 +33,8 @@ export class CourseController {
   }
 
   @Delete(':id')
-  async deleteCourse(@Param('id') id: string): Promise<DeleteResponse> {
-    await this.courseService.deleteCourse(+id);
+  async deleteCourse(@Param('id') id: number): Promise<DeleteResponse> {
+    await this.courseService.deleteCourse(id);
     return ResponseUtil.successDelete(id, 'User');
   }
 }

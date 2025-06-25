@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { AssignmentService } from './assignment.service';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { Assignment } from '@prisma/client';
@@ -15,8 +23,10 @@ export class AssignmentController {
   }
 
   @Get(':id')
-  async findAssignment(@Param('id') id: string): Promise<Assignment> {
-    return this.assignmentService.findAssignmentOrFail(+id);
+  async findAssignment(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Assignment> {
+    return this.assignmentService.findAssignmentOrFail(id);
   }
 
   @Post()
@@ -27,8 +37,10 @@ export class AssignmentController {
   }
 
   @Delete(':id')
-  async deleteAssignment(@Param('id') id: string): Promise<DeleteResponse> {
-    await this.assignmentService.deleteAssignment(+id);
+  async deleteAssignment(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<DeleteResponse> {
+    await this.assignmentService.deleteAssignment(id);
     return ResponseUtil.successDelete(id, 'Assignment');
   }
 }

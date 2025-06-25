@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from '@prisma/client';
@@ -15,8 +23,8 @@ export class UserController {
   }
 
   @Get(':id')
-  async findUser(@Param('id') id: string): Promise<User> {
-    return this.userService.findUserOrFail(+id);
+  async findUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.userService.findUserOrFail(id);
   }
 
   @Post()
@@ -25,8 +33,10 @@ export class UserController {
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id') id: string): Promise<DeleteResponse> {
-    await this.userService.deleteUser({ id: +id });
+  async deleteUser(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<DeleteResponse> {
+    await this.userService.deleteUser({ id });
     return ResponseUtil.successDelete(id, 'User');
   }
 }

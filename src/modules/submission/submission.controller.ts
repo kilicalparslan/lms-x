@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { SubmissionService } from './submission.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 import { ResponseUtil } from 'src/utils/response-util';
@@ -13,8 +21,8 @@ export class SubmissionController {
   }
 
   @Get(':id')
-  async findSubmission(@Param('id') id: string) {
-    return this.submissionService.findSubmissionOrFail(+id);
+  async findSubmission(@Param('id', ParseIntPipe) id: number) {
+    return this.submissionService.findSubmissionOrFail(id);
   }
 
   @Post()
@@ -23,8 +31,8 @@ export class SubmissionController {
   }
 
   @Delete(':id')
-  async deleteSubmission(@Param('id') id: string) {
-    await this.submissionService.deleteSubmission(+id);
+  async deleteSubmission(@Param('id', ParseIntPipe) id: number) {
+    await this.submissionService.deleteSubmission(id);
     return ResponseUtil.successDelete(id, 'Submission');
   }
 }

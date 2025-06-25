@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { EnrollmentService } from './enrollment.service';
 import { Enrollment } from '@prisma/client';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
@@ -13,8 +21,10 @@ export class EnrollmentController {
   }
 
   @Get(':id')
-  async findEnrollment(@Param('id') id: string): Promise<Enrollment> {
-    return this.enrollmentService.findEnrollmentOrFail(+id);
+  async findEnrollment(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Enrollment> {
+    return this.enrollmentService.findEnrollmentOrFail(id);
   }
 
   @Post()
@@ -25,7 +35,9 @@ export class EnrollmentController {
   }
 
   @Delete(':id')
-  async deleteEnrollment(@Param('id') id: string): Promise<Enrollment> {
-    return this.enrollmentService.deleteEnrollment(+id);
+  async deleteEnrollment(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Enrollment> {
+    return this.enrollmentService.deleteEnrollment(id);
   }
 }
