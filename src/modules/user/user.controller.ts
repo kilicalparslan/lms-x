@@ -5,38 +5,39 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from '@prisma/client';
-import { ResponseUtil } from 'src/utils/response-util';
-import { DeleteResponse } from 'src/types';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async findAllUsers(): Promise<User[]> {
-    return this.userService.findAllUsers();
+  findAll() {
+    return this.userService.findAll();
   }
 
   @Get(':id')
-  async findUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.userService.findUserOrFail(id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.findOne(id);
   }
 
   @Post()
-  async createUser(@Body() body: CreateUserDto): Promise<User> {
-    return this.userService.createUser(body);
+  create(@Body() body: CreateUserDto) {
+    return this.userService.create(body);
+  }
+
+  @Patch(':id')
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateUserDto) {
+    return this.userService.update(id, body);
   }
 
   @Delete(':id')
-  async deleteUser(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<DeleteResponse> {
-    await this.userService.deleteUser({ id });
-    return ResponseUtil.successDelete(id, 'User');
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.remove(id);
   }
 }
