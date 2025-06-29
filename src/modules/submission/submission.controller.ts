@@ -5,34 +5,42 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { SubmissionService } from './submission.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
-import { ResponseUtil } from 'src/utils/response-util';
+import { UpdateSubmissionDto } from './dto/update-submission.dto';
 
 @Controller('submission')
 export class SubmissionController {
   constructor(private readonly submissionService: SubmissionService) {}
 
   @Get()
-  async findAllSubmissions() {
-    return this.submissionService.findAllSubmissions();
+  findAll() {
+    return this.submissionService.findAll();
   }
 
   @Get(':id')
-  async findSubmission(@Param('id', ParseIntPipe) id: number) {
-    return this.submissionService.findSubmissionOrFail(id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.submissionService.findOne(id);
   }
 
   @Post()
-  async createSubmission(@Body() body: CreateSubmissionDto) {
-    return this.submissionService.createSubmission(body);
+  create(@Body() body: CreateSubmissionDto) {
+    return this.submissionService.create(body);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateSubmissionDto,
+  ) {
+    return this.submissionService.update(id, body);
   }
 
   @Delete(':id')
-  async deleteSubmission(@Param('id', ParseIntPipe) id: number) {
-    await this.submissionService.deleteSubmission(id);
-    return ResponseUtil.successDelete(id, 'Submission');
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.submissionService.remove(id);
   }
 }

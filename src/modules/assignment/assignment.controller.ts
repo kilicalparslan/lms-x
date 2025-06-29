@@ -5,42 +5,42 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { AssignmentService } from './assignment.service';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
-import { Assignment } from '@prisma/client';
-import { DeleteResponse } from 'src/types';
-import { ResponseUtil } from 'src/utils/response-util';
+import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 
 @Controller('assignments')
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
 
   @Get()
-  async findAllAssignments(): Promise<Assignment[]> {
-    return await this.assignmentService.findAllAssignments();
+  findAll() {
+    return this.assignmentService.findAll();
   }
 
   @Get(':id')
-  async findAssignment(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<Assignment> {
-    return this.assignmentService.findAssignmentOrFail(id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.assignmentService.findOne(id);
   }
 
   @Post()
-  async createAssignment(
-    @Body() body: CreateAssignmentDto,
-  ): Promise<Assignment> {
-    return await this.assignmentService.createAssignment(body);
+  create(@Body() body: CreateAssignmentDto) {
+    return this.assignmentService.create(body);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateAssignmentDto,
+  ) {
+    return this.assignmentService.update(id, body);
   }
 
   @Delete(':id')
-  async deleteAssignment(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<DeleteResponse> {
-    await this.assignmentService.deleteAssignment(id);
-    return ResponseUtil.successDelete(id, 'Assignment');
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.assignmentService.remove(id);
   }
 }

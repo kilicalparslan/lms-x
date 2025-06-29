@@ -5,36 +5,39 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
-import { Course } from '@prisma/client';
 import { CreateCourseDto } from './dto/create-course.dto';
-import { ResponseUtil } from 'src/utils/response-util';
-import { DeleteResponse } from 'src/types';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Controller('courses')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
   @Get()
-  async findAllCourses(): Promise<Course[]> {
-    return await this.courseService.findAllCourses();
+  findAll() {
+    return this.courseService.findAll();
   }
 
   @Get(':id')
-  async findACourse(@Param('id', ParseIntPipe) id: number): Promise<Course> {
-    return this.courseService.findCourseOrFail(id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.courseService.findOne(id);
   }
 
   @Post()
-  async createCourse(@Body() body: CreateCourseDto): Promise<Course> {
-    return await this.courseService.createCourse(body);
+  create(@Body() body: CreateCourseDto) {
+    return this.courseService.create(body);
+  }
+
+  @Patch(':id')
+  update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateCourseDto) {
+    return this.courseService.update(id, body);
   }
 
   @Delete(':id')
-  async deleteCourse(@Param('id') id: number): Promise<DeleteResponse> {
-    await this.courseService.deleteCourse(id);
-    return ResponseUtil.successDelete(id, 'User');
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.courseService.remove(id);
   }
 }

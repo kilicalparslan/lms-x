@@ -5,39 +5,42 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { EnrollmentService } from './enrollment.service';
-import { Enrollment } from '@prisma/client';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
+import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
 
 @Controller('enrollments')
 export class EnrollmentController {
   constructor(private readonly enrollmentService: EnrollmentService) {}
 
   @Get()
-  async findAllEnrollments(): Promise<Enrollment[]> {
-    return this.enrollmentService.findAllEnrollments();
+  findAll() {
+    return this.enrollmentService.findAll();
   }
 
   @Get(':id')
-  async findEnrollment(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<Enrollment> {
-    return this.enrollmentService.findEnrollmentOrFail(id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.enrollmentService.findOne(id);
   }
 
   @Post()
-  async createEnrollment(
-    @Body() body: CreateEnrollmentDto,
-  ): Promise<Enrollment> {
-    return await this.enrollmentService.createEnrollment(body);
+  create(@Body() body: CreateEnrollmentDto) {
+    return this.enrollmentService.create(body);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: UpdateEnrollmentDto,
+  ) {
+    return this.enrollmentService.update(id, body);
   }
 
   @Delete(':id')
-  async deleteEnrollment(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<Enrollment> {
-    return this.enrollmentService.deleteEnrollment(id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.enrollmentService.remove(id);
   }
 }

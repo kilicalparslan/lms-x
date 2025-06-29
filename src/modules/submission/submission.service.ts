@@ -1,33 +1,40 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Submission } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
+import { UpdateSubmissionDto } from './dto/update-submission.dto';
 
 @Injectable()
 export class SubmissionService {
   constructor(private prisma: PrismaService) {}
 
-  async findAllSubmissions(): Promise<Submission[]> {
+  async findAll() {
     return this.prisma.submission.findMany();
   }
 
-  async findSubmission(id: number): Promise<Submission | null> {
-    return this.prisma.submission.findUnique({ where: { id } });
-  }
-
-  async findSubmissionOrFail(id: number): Promise<Submission> {
-    const submission = await this.findSubmission(id);
-    if (!submission) {
-      throw new NotFoundException(`Submission with ID ${id} not found`);
-    }
+  async findOne(id: number) {
+    const submission = await this.prisma.submission.findUniqueOrThrow({
+      where: { id },
+    });
     return submission;
   }
 
-  async createSubmission(data: CreateSubmissionDto): Promise<Submission> {
-    return this.prisma.submission.create({ data });
+  async create(data: CreateSubmissionDto) {
+    return this.prisma.submission.create({
+      data,
+    });
   }
 
-  async deleteSubmission(id: number): Promise<Submission> {
-    return this.prisma.submission.delete({ where: { id } });
+  async update(id: number, data: UpdateSubmissionDto) {
+    return this.prisma.submission.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async remove(id: number) {
+    await this.prisma.submission.delete({
+      where: { id },
+    });
+    return { deleted: true };
   }
 }
